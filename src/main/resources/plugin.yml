@@ -3,3 +3,6 @@ version: '${project.version}'
 main: me.entity303.openshulker.OpenShulker
 api-version: 1.19
 authors: [Entity303]
+commands:
+  openshulker:
+    permission: "openshulker.admin"
