@@ -36,6 +36,9 @@ public class ShulkerOpenCloseListener implements Listener {
 
     @EventHandler
     public void onShulkerOpenAlternative(InventoryClickEvent e) {
+        if (e.getClickedInventory() != e.getWhoClicked().getInventory())
+            return;
+
         if (!e.isRightClick())
             return;
 
