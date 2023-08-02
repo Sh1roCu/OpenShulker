@@ -4,6 +4,7 @@ import me.entity303.openshulker.OpenShulker;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -74,6 +75,13 @@ public class ShulkerActions {
         container = player.getPersistentDataContainer();
 
         container.remove(this.openShulkerKey);
+
+        try {
+            player.playSound(player, Sound.valueOf(this.openShulker.getConfig().getString("CloseSound")), 1F, 1F);
+        } catch (Throwable ignored) {
+            //Ignore the exception, it's probably just a message about not being able to find the correct sound
+            //We have an info message in OpenShulker#onEnable for this
+        }
     }
 
     public boolean hasOpenShulkerBox(Player player) {
@@ -133,6 +141,12 @@ public class ShulkerActions {
 
         player.openInventory(shulker.getInventory());
 
+        try {
+            player.playSound(player, Sound.valueOf(this.openShulker.getConfig().getString("OpenSound")), 1F, 1F);
+        } catch (Throwable ignored) {
+            //Ignore the exception, it's probably just a message about not being able to find the correct sound
+            //We have an info message in OpenShulker#onEnable for this
+        }
         return true;
     }
 }
