@@ -13,14 +13,20 @@ You can download it on spigotmc: (I'll add a link as soon as I upload the plugin
 3. Restart your server
 
 # Configuration
-There is currently no configuration available or needed.
+```
+# Sound for opening a Shulker
+OpenSound: "BLOCK_SHULKER_BOX_OPEN"
+# Sound for closing a Shulker
+CloseSound: "BLOCK_SHULKER_BOX_CLOSE"
+```
 
 # Permissions
-There's currently only one permission:
-`openshulker.use`
+- `openshulker.use` -> To open shulkers
+- `openshulker.write` -> To make changes to shulker's inventory
+- `openshulker.admin` -> To use /openshulker
 
 # Commands
-There are currently no commands, since they aren't needed
+- `openshulker reload`
 
 # Support
 Discord: [https://discord.gg/dBhfCzdZxq](https://discord.gg/dBhfCzdZxq)
@@ -31,9 +37,6 @@ Github: [Issues Page](https://github.com/TheBlackEntity/OpenShulker/issues)
 - Add ability to input items by right clicking an item on/with a shulker box
 - Add ability to add a cooldown
 - Add ability to open Shulkers in chests
-- Add Open Sound
-- Add Close Sound
-- Add readonly mode
 - Add ChestSort Hook
 - Add WorldGuard Hook
 - Add update checker
