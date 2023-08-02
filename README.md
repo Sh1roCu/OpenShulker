@@ -5,26 +5,26 @@ You can open a Shulker by Shift-Rightclicking it in your hand or Inventory.
 
 This plugin aims to replace the now inactive resource "BetterShulkerBoxes".
 
-#Installation
+# Installation
 1. Download or compile the JAR
 2. Drop the JAR in your server's plugin folder
 3. Restart your server
 
-#Configuration
+# Configuration
 There is currently no configuration available or needed.
 
-#Permissions
+# Permissions
 There's currently only one permission:
 `openshulker.use`
 
-#Commands
+# Commands
 There are currently no commands, since they aren't needed
 
-#Support
+# Support
 Discord: [https://discord.gg/dBhfCzdZxq](https://discord.gg/dBhfCzdZxq)
 Github: [Issues Page](https://github.com/TheBlackEntity/OpenShulker/issues)
 
-#Todo
+# Todo
 - Add ability to input items by right clicking an item on/with a shulker box
 - Add ability to add a cooldown
 - Add Open Sound
