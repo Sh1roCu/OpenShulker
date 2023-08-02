@@ -105,6 +105,9 @@ public class ShulkerActions {
     }
 
     public boolean tryOpenShulkerBox(Player player, ItemStack itemStack) {
+        if (!player.hasPermission("openshulker.use"))
+            return false;
+
         if (itemStack.getAmount() <= 0)
             return false;
 
