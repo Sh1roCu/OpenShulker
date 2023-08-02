@@ -24,6 +24,7 @@ There are currently no commands, since they aren't needed
 
 # Support
 Discord: [https://discord.gg/dBhfCzdZxq](https://discord.gg/dBhfCzdZxq)
+
 Github: [Issues Page](https://github.com/TheBlackEntity/OpenShulker/issues)
 
 # Todo
