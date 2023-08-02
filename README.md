@@ -29,6 +29,7 @@ Github: [Issues Page](https://github.com/TheBlackEntity/OpenShulker/issues)
 # Todo
 - Add ability to input items by right clicking an item on/with a shulker box
 - Add ability to add a cooldown
+- Add ability to open Shulkers in chests
 - Add Open Sound
 - Add Close Sound
 - Add readonly mode
