@@ -135,9 +135,16 @@ public class ShulkerActions {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
+        if (container.has(this.openShulkerKey, PersistentDataType.BYTE))
+            return false;
+
         container.set(this.openShulkerKey, PersistentDataType.BYTE, (byte) 1);
 
         itemStack.setItemMeta(meta);
+
+        container = player.getPersistentDataContainer();
+
+        container.set(this.openShulkerKey, PersistentDataType.BYTE, (byte) 1);
 
         player.openInventory(shulker.getInventory());
 
