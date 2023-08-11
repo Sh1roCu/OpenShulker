@@ -18,6 +18,12 @@ You can download it on spigotmc: (I'll add a link as soon as I upload the plugin
 OpenSound: "BLOCK_SHULKER_BOX_OPEN"
 # Sound for closing a Shulker
 CloseSound: "BLOCK_SHULKER_BOX_CLOSE"
+Messages:
+  Prefix: "&8[&2OpenShulker&8] &7"
+  CannotBreakContainer: "§cYou cannot break this container, since there's an opened shulker in it"
+  OpenShulkerCommand:
+    Syntax: "&cSyntax: &4/<LABEL> <Reload>"
+    Reloaded: "The plugin was reloaded!"
 ```
 
 # Permissions
