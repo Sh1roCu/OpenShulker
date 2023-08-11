@@ -1,6 +1,7 @@
 package me.entity303.openshulker.commands;
 
 import me.entity303.openshulker.OpenShulker;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -18,24 +19,25 @@ public class OpenShulkerCommand implements TabExecutor {
         this.openShulker = openShulker;
     }
 
-    //TODO: Add messages.yml for translations
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!commandSender.hasPermission("openshulker.admin"))
             return true;
 
+        String prefix = ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.Prefix"));
+
         if (args.length <= 0) {
-            commandSender.sendMessage("§cSyntax: §4/" + label + " reload");
+            commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.OpenShulkerCommand.Syntax")));
             return true;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
             this.openShulker.reloadConfig();
-            commandSender.sendMessage("§2Reloaded!");
+            commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.OpenShulkerCommand.Reloaded")));
             return true;
         }
 
-        commandSender.sendMessage("§cSyntax: §4/" + label + " reload");
+        commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.OpenShulkerCommand.Syntax")));
         return true;
     }
 
