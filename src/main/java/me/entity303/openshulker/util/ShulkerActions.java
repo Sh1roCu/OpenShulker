@@ -1,10 +1,9 @@
 package me.entity303.openshulker.util;
 
 import me.entity303.openshulker.OpenShulker;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,15 +15,54 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class ShulkerActions {
     private final NamespacedKey openShulkerKey;
+    private final NamespacedKey openShulkerLocationKey;
     private OpenShulker openShulker;
 
     public ShulkerActions(OpenShulker openShulker) {
         this.openShulker = openShulker;
         this.openShulkerKey = new NamespacedKey(this.openShulker, "openshulker");
+        this.openShulkerLocationKey = new NamespacedKey(this.openShulker, "openshulkerlocation");
     }
 
     public ItemStack searchShulkerBox(Player player) {
-        for (ItemStack itemStack : player.getInventory().getContents()) {
+        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+
+        if (dataContainer.has(this.openShulkerLocationKey)) {
+            Container container = this.getShulkerHoldingContainer(player);
+
+            return this.searchShulkerBox(container.getInventory(), player);
+        }
+
+        return this.searchShulkerBox(player.getInventory());
+    }
+
+    public Container getShulkerHoldingContainer(Player player) {
+        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+
+        if (!dataContainer.has(this.openShulkerLocationKey))
+            return null;
+
+        String locationString = dataContainer.get(this.openShulkerLocationKey, PersistentDataType.STRING);
+        String[] locationStringArray = locationString.split(";");
+
+        double x = Double.parseDouble(locationStringArray[0]);
+        double y = Double.parseDouble(locationStringArray[1]);
+        double z = Double.parseDouble(locationStringArray[2]);
+
+        World world = Bukkit.getWorld(locationStringArray[3]);
+
+        Location location = new Location(world, x, y, z);
+
+        Block block = location.getBlock();
+
+        if (!(block.getState() instanceof Container container))
+            return null;
+
+        return container;
+    }
+
+    public ItemStack searchShulkerBox(Inventory inventory) {
+        for (ItemStack itemStack : inventory.getContents()) {
             if (itemStack == null)
                 continue;
 
@@ -40,7 +78,24 @@ public class ShulkerActions {
         return null;
     }
 
-    public boolean isOpenShulker(ItemStack itemStack) {
+    public ItemStack searchShulkerBox(Inventory inventory, Player player) {
+        for (ItemStack itemStack : inventory.getContents()) {
+            if (itemStack == null)
+                continue;
+
+            if (itemStack.getType() == Material.AIR)
+                continue;
+
+            if (!this.isOpenShulker(itemStack, player))
+                continue;
+
+            return itemStack;
+        }
+
+        return null;
+    }
+
+    public boolean isOpenShulker(ItemStack itemStack, Player player) {
         ItemMeta meta = itemStack.getItemMeta();
 
         if (!(itemStack.getItemMeta() instanceof BlockStateMeta))
@@ -48,10 +103,25 @@ public class ShulkerActions {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        if (!container.has(this.openShulkerKey, PersistentDataType.BYTE))
+        if (!container.has(this.openShulkerKey, PersistentDataType.STRING))
+            return false;
+
+        if (player == null)
+            return true;
+
+        String uniqueId = container.get(this.openShulkerKey, PersistentDataType.STRING);
+
+        if (uniqueId == null)
+            return false;
+
+        if (!uniqueId.equalsIgnoreCase(player.getUniqueId().toString()))
             return false;
 
         return true;
+    }
+
+    public boolean isOpenShulker(ItemStack itemStack) {
+        return this.isOpenShulker(itemStack, null);
     }
 
     public void saveShulkerBox(ItemStack shulkerBoxStack, Inventory inventory, Player player) {
@@ -75,6 +145,8 @@ public class ShulkerActions {
         container = player.getPersistentDataContainer();
 
         container.remove(this.openShulkerKey);
+
+        container.remove(this.openShulkerLocationKey);
 
         try {
             player.playSound(player, Sound.valueOf(this.openShulker.getConfig().getString("CloseSound")), 1F, 1F);
@@ -106,13 +178,30 @@ public class ShulkerActions {
         return true;
     }
 
-    public boolean tryOpenShulkerBox(Player player) {
+    public boolean attemptToOpenShulkerBox(Player player) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
 
-        return this.tryOpenShulkerBox(player, itemStack);
+        return this.attemptToOpenShulkerBox(player, itemStack);
     }
 
-    public boolean tryOpenShulkerBox(Player player, ItemStack itemStack) {
+    public boolean attemptToOpenShulkerBox(Player player, ItemStack itemStack, Location chest) {
+        Block block = chest.getBlock();
+
+        if (!(block.getState() instanceof Container))
+            return false;
+
+        boolean open = this.attemptToOpenShulkerBox(player, itemStack);
+
+        if (!open)
+            return false;
+
+        PersistentDataContainer container = player.getPersistentDataContainer();
+
+        container.set(this.openShulkerLocationKey, PersistentDataType.STRING, chest.getX() + ";" + chest.getY() + ";" + chest.getZ() + ";" + chest.getWorld().getName());
+        return true;
+    }
+
+    public boolean attemptToOpenShulkerBox(Player player, ItemStack itemStack) {
         if (!player.hasPermission("openshulker.use"))
             return false;
 
@@ -135,16 +224,16 @@ public class ShulkerActions {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
-        if (container.has(this.openShulkerKey, PersistentDataType.BYTE))
+        if (container.has(this.openShulkerKey, PersistentDataType.STRING))
             return false;
 
-        container.set(this.openShulkerKey, PersistentDataType.BYTE, (byte) 1);
+        container.set(this.openShulkerKey, PersistentDataType.STRING, player.getUniqueId().toString());
 
         itemStack.setItemMeta(meta);
 
         container = player.getPersistentDataContainer();
 
-        container.set(this.openShulkerKey, PersistentDataType.BYTE, (byte) 1);
+        container.set(this.openShulkerKey, PersistentDataType.STRING, player.getUniqueId().toString());
 
         player.openInventory(shulker.getInventory());
 
