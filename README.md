@@ -1,5 +1,5 @@
 # OpenShulker
-OpenShulker is a plugin for 1.13 to 1.20.1 that makes Shulkerboxes more useful.
+OpenShulker is a plugin for 1.14 to 1.20.1 that makes Shulkerboxes more useful.
 
 You can open a Shulker by Shift-Rightclicking it in your hand or Inventory.
 
@@ -35,8 +35,6 @@ Github: [Issues Page](https://github.com/TheBlackEntity/OpenShulker/issues)
 
 # Todo
 - Add ability to input items by right clicking an item on/with a shulker box
-- Add ability to add a cooldown
-- Add ability to open Shulkers in chests
 - Add ChestSort Hook
 - Add WorldGuard Hook
 - Add update checker
