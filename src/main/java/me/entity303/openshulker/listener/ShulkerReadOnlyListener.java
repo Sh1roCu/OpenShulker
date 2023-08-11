@@ -16,13 +16,10 @@ public class ShulkerReadOnlyListener implements Listener {
 
     @EventHandler
     public void onShulkerInventoryClick(InventoryClickEvent e) {
-        if (e.getClickedInventory() == e.getWhoClicked().getInventory())
+        if (e.getView().getTopInventory().getType() != InventoryType.SHULKER_BOX)
             return;
 
-        if (e.getClickedInventory().getType() != InventoryType.SHULKER_BOX)
-            return;
-
-        if (!openShulker.getShulkerActions().hasOpenShulkerBox((Player) e.getWhoClicked()))
+        if (!this.openShulker.getShulkerActions().hasOpenShulkerBox((Player) e.getWhoClicked()))
             return;
 
         if (e.getWhoClicked().hasPermission("openshulker.write"))
