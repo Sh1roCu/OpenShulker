@@ -5,7 +5,7 @@ You can open a Shulker by Shift-Rightclicking it in your hand or Inventory.
 
 This plugin aims to replace the now inactive resource "BetterShulkerBoxes".
 
-You can download it on spigotmc: (I'll add a link as soon as I upload the plugin)
+You can download it on spigotmc: [OpenShulker](https://www.spigotmc.org/resources/openshulker.111948/)
 
 # Installation
 1. Download or compile the JAR
