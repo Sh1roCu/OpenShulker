@@ -27,6 +27,9 @@ public class ShulkerActions {
     public ItemStack searchShulkerBox(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
+        if (this.hasOpenShulkerInEnderChest(player))
+            return this.searchShulkerBox(player.getEnderChest(), player);
+
         if (dataContainer.has(this.openShulkerLocationKey)) {
             Container container = this.getShulkerHoldingContainer(player);
 
@@ -36,10 +39,19 @@ public class ShulkerActions {
         return this.searchShulkerBox(player.getInventory());
     }
 
+    public boolean hasOpenShulkerInEnderChest(Player player) {
+        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+
+        return dataContainer.has(this.openShulkerLocationKey, PersistentDataType.BYTE);
+    }
+
     public Container getShulkerHoldingContainer(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
         if (!dataContainer.has(this.openShulkerLocationKey))
+            return null;
+
+        if (dataContainer.has(this.openShulkerLocationKey, PersistentDataType.BYTE))
             return null;
 
         String locationString = dataContainer.get(this.openShulkerLocationKey, PersistentDataType.STRING);
@@ -198,6 +210,21 @@ public class ShulkerActions {
         PersistentDataContainer container = player.getPersistentDataContainer();
 
         container.set(this.openShulkerLocationKey, PersistentDataType.STRING, chest.getX() + ";" + chest.getY() + ";" + chest.getZ() + ";" + chest.getWorld().getName());
+        return true;
+    }
+
+    public boolean attemptToOpenShulkerBox(Player player, ItemStack itemStack, boolean enderChest) {
+        boolean open = this.attemptToOpenShulkerBox(player, itemStack);
+
+        if (!open)
+            return false;
+
+        if (!enderChest)
+            return true;
+
+        PersistentDataContainer container = player.getPersistentDataContainer();
+
+        container.set(this.openShulkerLocationKey, PersistentDataType.BYTE, (byte) 1);
         return true;
     }
 
