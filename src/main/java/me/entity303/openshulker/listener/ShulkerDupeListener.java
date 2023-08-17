@@ -60,8 +60,10 @@ public class ShulkerDupeListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onContainerBreak(BlockBreakEvent e) {
-        if (!(e.getBlock().getState() instanceof Container container))
+        if (!(e.getBlock().getState() instanceof Container))
             return;
+
+        Container container = (Container) e.getBlock().getState();
 
         ItemStack shulkerBox = this.openShulker.getShulkerActions().searchShulkerBox(container.getInventory());
 
@@ -77,8 +79,10 @@ public class ShulkerDupeListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onContainerBreak(BlockDropItemEvent e) {
-        if (!(e.getBlock().getState() instanceof Container container))
+        if (!(e.getBlock().getState() instanceof Container))
             return;
+
+        Container container = (Container) e.getBlock().getState();
 
         ItemStack shulkerBox = this.openShulker.getShulkerActions().searchShulkerBox(container.getInventory());
 
@@ -155,7 +159,7 @@ public class ShulkerDupeListener implements Listener {
 
     @EventHandler
     public void onItemMove(InventoryMoveItemEvent e) {
-        if (!openShulker.getShulkerActions().isOpenShulker(e.getItem()))
+        if (!this.openShulker.getShulkerActions().isOpenShulker(e.getItem()))
             return;
 
         e.setCancelled(true);
@@ -163,7 +167,7 @@ public class ShulkerDupeListener implements Listener {
 
     @EventHandler
     public void onBlockDispense(BlockDispenseEvent e) {
-        if (!openShulker.getShulkerActions().isOpenShulker(e.getItem()))
+        if (!this.openShulker.getShulkerActions().isOpenShulker(e.getItem()))
             return;
 
         e.setCancelled(true);
@@ -184,8 +188,10 @@ public class ShulkerDupeListener implements Listener {
 
     private void removeContainersWithOpenShulkers(List<Block> blockList) {
         for (Block block : new ArrayList<>(blockList)) {
-            if (!(block.getState() instanceof Container container))
+            if (!(block.getState() instanceof Container))
                 continue;
+
+            Container container = (Container) block.getState();
 
             ItemStack shulkerBox = this.openShulker.getShulkerActions().searchShulkerBox(container.getInventory());
 

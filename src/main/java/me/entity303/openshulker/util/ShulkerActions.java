@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
@@ -30,7 +31,7 @@ public class ShulkerActions {
         if (this.hasOpenShulkerInEnderChest(player))
             return this.searchShulkerBox(player.getEnderChest(), player);
 
-        if (dataContainer.has(this.openShulkerLocationKey)) {
+        if (dataContainer.has(this.openShulkerLocationKey, PersistentDataType.STRING)) {
             Container container = this.getShulkerHoldingContainer(player);
 
             return this.searchShulkerBox(container.getInventory(), player);
@@ -48,10 +49,10 @@ public class ShulkerActions {
     public Container getShulkerHoldingContainer(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
-        if (!dataContainer.has(this.openShulkerLocationKey))
+        if (dataContainer.has(this.openShulkerLocationKey, PersistentDataType.BYTE))
             return null;
 
-        if (dataContainer.has(this.openShulkerLocationKey, PersistentDataType.BYTE))
+        if (!dataContainer.has(this.openShulkerLocationKey, PersistentDataType.STRING))
             return null;
 
         String locationString = dataContainer.get(this.openShulkerLocationKey, PersistentDataType.STRING);
@@ -67,8 +68,10 @@ public class ShulkerActions {
 
         Block block = location.getBlock();
 
-        if (!(block.getState() instanceof Container container))
+        if (!(block.getState() instanceof Container))
             return null;
+
+        Container container = (Container) block.getState();
 
         return container;
     }
@@ -173,7 +176,7 @@ public class ShulkerActions {
 
         PersistentDataContainer container = player.getPersistentDataContainer();
 
-        if (!container.has(this.openShulkerKey)) {
+        if (!container.has(this.openShulkerKey, PersistentDataType.STRING)) {
             if (itemStack != null) {
                 Bukkit.getLogger().severe("Player " + player.getName() + " (" + player.getUniqueId() + ") may have duped!");
                 Bukkit.getLogger().severe("Found opened Shulker while not having a shulker open!");
@@ -241,11 +244,15 @@ public class ShulkerActions {
         if (!itemStack.getType().name().contains(Material.SHULKER_BOX.name()))
             return false;
 
-        if (!(itemStack.getItemMeta() instanceof BlockStateMeta blockStateMeta))
+        if (!(itemStack.getItemMeta() instanceof BlockStateMeta))
             return false;
 
-        if (!(blockStateMeta.getBlockState() instanceof ShulkerBox shulker))
+        BlockStateMeta blockStateMeta = (BlockStateMeta) itemStack.getItemMeta();
+
+        if (!(blockStateMeta.getBlockState() instanceof ShulkerBox))
             return false;
+
+        ShulkerBox shulker = (ShulkerBox) blockStateMeta.getBlockState();
 
         ItemMeta meta = itemStack.getItemMeta();
 
@@ -262,7 +269,11 @@ public class ShulkerActions {
 
         container.set(this.openShulkerKey, PersistentDataType.STRING, player.getUniqueId().toString());
 
-        player.openInventory(shulker.getInventory());
+        Inventory inventory = Bukkit.createInventory(null, InventoryType.SHULKER_BOX);
+
+        inventory.setContents(shulker.getInventory().getContents());
+
+        player.openInventory(inventory);
 
         try {
             player.playSound(player, Sound.valueOf(this.openShulker.getConfig().getString("OpenSound")), 1F, 1F);
