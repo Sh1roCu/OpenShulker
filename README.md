@@ -35,7 +35,7 @@ Messages:
 - `openshulker reload`
 
 # Support
-Discord: [https://discord.gg/dBhfCzdZxq](https://discord.gg/dBhfCzdZxq)
+Discord: [https://discord.gg/GxEFhVY6ff](https://discord.gg/GxEFhVY6ff)
 
 Github: [Issues Page](https://github.com/TheBlackEntity/OpenShulker/issues)
 
