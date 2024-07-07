@@ -218,11 +218,6 @@ public class ShulkerActions {
 
         PersistentDataContainer playerContainer = player.getPersistentDataContainer();
         Bukkit.getScheduler().runTaskLater(this._openShulker, () -> {
-            if (!player.getInventory().contains(itemStack)) {
-                playerContainer.remove(this._openShulkerKey);
-                return;
-            }
-
             inventory.setContents(shulker.getInventory().getContents());
 
             player.openInventory(inventory);

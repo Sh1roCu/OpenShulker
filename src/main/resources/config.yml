@@ -1,3 +1,8 @@
+OpenMethods:
+  AllowInventoryOpen: true
+  AllowContainerOpen: true
+  AllowEnderChestOpen: true
+  AllowHandOpen: true
 WaitSecondsBeforeOpen: 0
 OpenSound: "BLOCK_SHULKER_BOX_OPEN"
 CloseSound: "BLOCK_SHULKER_BOX_CLOSE"

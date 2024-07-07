@@ -14,6 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class OpenShulker extends JavaPlugin implements Listener {
+    public boolean _allowInventoryOpen = true;
+    public boolean _allowContainerOpen = true;
+    public boolean _allowEnderChestOpen = true;
+    public boolean _allowHandOpen = true;
     private ShulkerActions _shulkerActions;
 
     @Override
@@ -33,6 +37,23 @@ public final class OpenShulker extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        this.InitializeConfig();
+
+        this._shulkerActions = new ShulkerActions(this);
+
+        Bukkit.getPluginManager().registerEvents(new ShulkerOpenCloseListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new ShulkerDupeListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new ShulkerReadOnlyListener(this), this);
+
+        OpenShulkerCommand openShulkerCommand = new OpenShulkerCommand(this);
+
+        PluginCommand command = this.getCommand("openshulker");
+
+        command.setExecutor(openShulkerCommand);
+        command.setTabCompleter(openShulkerCommand);
+    }
+
+    private void InitializeConfig() {
         this.saveDefaultConfig();
 
         this.reloadConfig();
@@ -67,18 +88,10 @@ public final class OpenShulker extends JavaPlugin implements Listener {
                                  "', for a list of sounds, visit https://www.spigotmc.org/wiki/cc-sounds-list/");
         }
 
-        this._shulkerActions = new ShulkerActions(this);
-
-        Bukkit.getPluginManager().registerEvents(new ShulkerOpenCloseListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new ShulkerDupeListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new ShulkerReadOnlyListener(this), this);
-
-        OpenShulkerCommand openShulkerCommand = new OpenShulkerCommand(this);
-
-        PluginCommand command = this.getCommand("openshulker");
-
-        command.setExecutor(openShulkerCommand);
-        command.setTabCompleter(openShulkerCommand);
+        this._allowInventoryOpen = this.getConfig().getBoolean("OpenMethods.AllowInventoryOpen");
+        this._allowContainerOpen = this.getConfig().getBoolean("OpenMethods.AllowContainerOpen");
+        this._allowEnderChestOpen = this.getConfig().getBoolean("OpenMethods.AllowEnderChestOpen");
+        this._allowHandOpen = this.getConfig().getBoolean("OpenMethods.AllowHandOpen");
     }
 
     public ShulkerActions GetShulkerActions() {
