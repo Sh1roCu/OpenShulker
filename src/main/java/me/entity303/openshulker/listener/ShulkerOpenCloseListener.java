@@ -6,8 +6,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Container;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -22,169 +24,77 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class ShulkerOpenCloseListener implements Listener {
-    private final OpenShulker openShulker;
-    private final NamespacedKey clickedShulkerKey;
+    private final OpenShulker _openShulker;
+    private final NamespacedKey _clickedShulkerKey;
 
     public ShulkerOpenCloseListener(OpenShulker openShulker) {
-        this.openShulker = openShulker;
+        this._openShulker = openShulker;
 
-        this.clickedShulkerKey = new NamespacedKey(this.openShulker, "clickedshulker");
+        this._clickedShulkerKey = new NamespacedKey(this._openShulker, "clickedshulker");
     }
 
-    @EventHandler
-    public void onShulkerOpen(PlayerInteractEvent e) {
-        if (e.getHand() != EquipmentSlot.HAND)
-            return;
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void OnShulkerOpen(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
 
-        if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK)
-            return;
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
-        if (!e.getPlayer().isSneaking())
-            return;
+        if (!event.getPlayer().isSneaking()) return;
 
-        e.setCancelled(this.openShulker.getShulkerActions().attemptToOpenShulkerBox(e.getPlayer()));
+        event.setCancelled(this._openShulker.GetShulkerActions().AttemptToOpenShulkerBox(event.getPlayer()));
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onShulkerOpenAlternative(InventoryClickEvent e) {
-        if (!e.getWhoClicked().hasPermission("openshulker.use"))
-            return;
+    public void OnShulkerOpenAlternative(InventoryClickEvent e) {
+        if (!e.getWhoClicked().hasPermission("openshulker.use")) return;
 
-        if (e.getClickedInventory() == null)
-            return;
+        if (e.getClickedInventory() == null) return;
 
         int clickedSlot = e.getSlot();
 
         ItemStack clickedItemStack = e.getClickedInventory().getItem(clickedSlot);
 
-        if (clickedItemStack == null)
-            return;
+        if (clickedItemStack == null) return;
 
-        if (clickedItemStack.getType() == Material.AIR)
-            return;
+        if (clickedItemStack.getType() == Material.AIR) return;
 
-        if (!e.isRightClick())
-            return;
+        if (!e.isRightClick()) return;
 
-        if (!e.isShiftClick())
-            return;
+        if (!e.isShiftClick()) return;
 
-        if (e.getClickedInventory() == e.getWhoClicked().getInventory())
-            if (clickedItemStack.getType().name().contains(Material.SHULKER_BOX.name()))
-                if (e.getView().getTopInventory().getType() == InventoryType.SHULKER_BOX) {
-                    if (this.openShulker.getShulkerActions().hasOpenShulkerBox((Player) e.getWhoClicked())) {
-                        ItemStack shulkerBox = this.openShulker.getShulkerActions().searchShulkerBox((Player) e.getWhoClicked());
+        if (e.getClickedInventory() == e.getWhoClicked().getInventory()) if (clickedItemStack.getType().name().contains(Material.SHULKER_BOX.name()))
+            if (e.getView().getTopInventory().getType() == InventoryType.SHULKER_BOX) {
+                if (this._openShulker.GetShulkerActions().HasOpenShulkerBox((Player) e.getWhoClicked())) {
+                    ItemStack shulkerBox = this._openShulker.GetShulkerActions().SearchShulkerBox((Player) e.getWhoClicked());
 
-                        this.openShulker.getShulkerActions().saveShulkerBox(shulkerBox, e.getView().getTopInventory(), (Player) e.getWhoClicked());
-                    }
-
-                    //Close inventory to prevent overriding open shulker contents
-                    e.getWhoClicked().closeInventory();
+                    this._openShulker.GetShulkerActions().SaveShulkerBox(shulkerBox, e.getView().getTopInventory(), (Player) e.getWhoClicked());
                 }
 
-        if (e.getClickedInventory().getType() == InventoryType.ENDER_CHEST) {
-            if (!this.isOwnerOfEnderChest((Player) e.getWhoClicked(), clickedItemStack, clickedSlot))
-                return;
+                //Close inventory to prevent overriding open shulker contents
+                e.getWhoClicked().closeInventory();
+            }
 
-            e.setCancelled(this.openShulker.getShulkerActions().attemptToOpenShulkerBox((Player) e.getWhoClicked(), clickedItemStack, true));
+        if (e.getClickedInventory().getType() == InventoryType.ENDER_CHEST) {
+            if (!this.IsOwnerOfEnderChest((Player) e.getWhoClicked(), clickedItemStack, clickedSlot)) return;
+
+            e.setCancelled(this._openShulker.GetShulkerActions().AttemptToOpenShulkerBox((Player) e.getWhoClicked(), clickedItemStack, true));
             return;
         }
 
         Location location = null;
-        if (e.getClickedInventory() != e.getWhoClicked().getInventory())
-            location = e.getClickedInventory().getLocation();
+        if (e.getClickedInventory() != e.getWhoClicked().getInventory()) location = e.getClickedInventory().getLocation();
 
-        if (location == null)
-            e.setCancelled(this.openShulker.getShulkerActions().attemptToOpenShulkerBox((Player) e.getWhoClicked(), clickedItemStack));
-        else
-            e.setCancelled(this.openShulker.getShulkerActions().attemptToOpenShulkerBox((Player) e.getWhoClicked(), clickedItemStack, location));
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onShulkerItemDrop(PlayerDropItemEvent e) {
-        if (!this.openShulker.getShulkerActions().hasOpenShulkerBox(e.getPlayer()))
-            return;
-
-        ItemStack shulkerBox = e.getItemDrop().getItemStack();
-
-        if (!this.openShulker.getShulkerActions().isOpenShulker(shulkerBox, e.getPlayer()))
-            return;
-
-        boolean enderChest = this.openShulker.getShulkerActions().hasOpenShulkerInEnderChest((Player) e.getPlayer());
-
-        Container container = this.openShulker.getShulkerActions().getShulkerHoldingContainer(e.getPlayer());
-
-        this.openShulker.getShulkerActions().saveShulkerBox(shulkerBox, e.getPlayer().getOpenInventory().getTopInventory(), e.getPlayer());
-
-        e.getPlayer().closeInventory();
-
-        Bukkit.getScheduler().runTaskLater(this.openShulker, () -> {
-            if (container != null) {
-                if (container.getWorld() != e.getPlayer().getWorld())
-                    return;
-
-                if (container.getLocation().distance(e.getPlayer().getLocation()) > 4)
-                    return;
-
-                e.getPlayer().openInventory(container.getInventory());
-                return;
-            }
-
-
-            if (!enderChest)
-                return;
-
-            e.getPlayer().openInventory(e.getPlayer().getEnderChest());
-        }, 1L);
-    }
-
-    @EventHandler
-    public void onShulkerInventoryClose(InventoryCloseEvent e) {
-        if (e.getInventory().getType() != InventoryType.SHULKER_BOX)
-            return;
-
-        if (!this.openShulker.getShulkerActions().hasOpenShulkerBox((Player) e.getPlayer()))
-            return;
-
-        ItemStack itemStack = this.openShulker.getShulkerActions().searchShulkerBox((Player) e.getPlayer());
-
-        if (itemStack == null)
-            return;
-
-        boolean enderChest = this.openShulker.getShulkerActions().hasOpenShulkerInEnderChest((Player) e.getPlayer());
-
-        Container container = this.openShulker.getShulkerActions().getShulkerHoldingContainer((Player) e.getPlayer());
-
-        this.openShulker.getShulkerActions().saveShulkerBox(itemStack, e.getInventory(), (Player) e.getPlayer());
-
-        e.getPlayer().closeInventory();
-
-        Bukkit.getScheduler().runTaskLater(this.openShulker, () -> {
-            if (container != null) {
-                if (container.getWorld() != e.getPlayer().getWorld())
-                    return;
-
-                if (container.getLocation().distance(e.getPlayer().getLocation()) > 4)
-                    return;
-
-                e.getPlayer().openInventory(container.getInventory());
-                return;
-            }
-
-            if (!enderChest)
-                return;
-
-            e.getPlayer().openInventory(e.getPlayer().getEnderChest());
-        }, 1L);
+        if (location == null) e.setCancelled(this._openShulker.GetShulkerActions().AttemptToOpenShulkerBox((Player) e.getWhoClicked(), clickedItemStack));
+        else e.setCancelled(this._openShulker.GetShulkerActions().AttemptToOpenShulkerBox((Player) e.getWhoClicked(), clickedItemStack, location));
     }
 
     //Awful code, I know, but I don't see a better way
-    private boolean isOwnerOfEnderChest(Player player, ItemStack clickedItemStack, int clickedSlot) {
+    private boolean IsOwnerOfEnderChest(Player player, ItemStack clickedItemStack, int clickedSlot) {
         ItemMeta clickedItemMeta = clickedItemStack.getItemMeta();
 
         PersistentDataContainer clickedItemContainer = clickedItemMeta.getPersistentDataContainer();
 
-        clickedItemContainer.set(this.clickedShulkerKey, PersistentDataType.STRING, player.getUniqueId().toString());
+        clickedItemContainer.set(this._clickedShulkerKey, PersistentDataType.STRING, player.getUniqueId().toString());
 
         clickedItemStack.setItemMeta(clickedItemMeta);
 
@@ -192,7 +102,7 @@ public class ShulkerOpenCloseListener implements Listener {
         ItemStack potentiallyClickedItem = player.getEnderChest().getItem(clickedSlot);
 
         if (potentiallyClickedItem == null) {
-            clickedItemContainer.remove(this.clickedShulkerKey);
+            clickedItemContainer.remove(this._clickedShulkerKey);
 
             clickedItemStack.setItemMeta(clickedItemMeta);
             return false;
@@ -204,16 +114,71 @@ public class ShulkerOpenCloseListener implements Listener {
 
         boolean isOwner = false;
 
-        if (potentiallyClickedItemContainer.has(this.clickedShulkerKey, PersistentDataType.STRING)) {
-            String uuid = potentiallyClickedItemContainer.get(this.clickedShulkerKey, PersistentDataType.STRING);
+        if (potentiallyClickedItemContainer.has(this._clickedShulkerKey, PersistentDataType.STRING)) {
+            String uuid = potentiallyClickedItemContainer.get(this._clickedShulkerKey, PersistentDataType.STRING);
 
             isOwner = uuid.equalsIgnoreCase(player.getUniqueId().toString());
         }
 
-        clickedItemContainer.remove(this.clickedShulkerKey);
+        clickedItemContainer.remove(this._clickedShulkerKey);
 
         clickedItemStack.setItemMeta(clickedItemMeta);
 
         return isOwner;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void OnShulkerItemDrop(PlayerDropItemEvent event) {
+        if (!this._openShulker.GetShulkerActions().HasOpenShulkerBox(event.getPlayer())) return;
+
+        ItemStack shulkerBox = event.getItemDrop().getItemStack();
+
+        if (!this._openShulker.GetShulkerActions().IsOpenShulker(shulkerBox, event.getPlayer())) return;
+
+        boolean enderChest = this._openShulker.GetShulkerActions().HasOpenShulkerInEnderChest((Player) event.getPlayer());
+
+        Container container = this._openShulker.GetShulkerActions().GetShulkerHoldingContainer(event.getPlayer());
+
+        this._openShulker.GetShulkerActions().SaveShulkerBox(shulkerBox, event.getPlayer().getOpenInventory().getTopInventory(), event.getPlayer());
+
+        this.ReopenInventory(enderChest, container, event.getPlayer());
+    }
+
+    private void ReopenInventory(boolean enderChest, Container container, HumanEntity player) {
+        player.closeInventory();
+
+        Bukkit.getScheduler().runTaskLater(this._openShulker, () -> {
+            if (container != null) {
+                if (container.getWorld() != player.getWorld()) return;
+
+                if (container.getLocation().distance(player.getLocation()) > 4) return;
+
+                player.openInventory(container.getInventory());
+                return;
+            }
+
+            if (!enderChest) return;
+
+            player.openInventory(player.getEnderChest());
+        }, 1L);
+    }
+
+    @EventHandler
+    public void OnShulkerInventoryClose(InventoryCloseEvent event) {
+        if (event.getInventory().getType() != InventoryType.SHULKER_BOX) return;
+
+        if (!this._openShulker.GetShulkerActions().HasOpenShulkerBox((Player) event.getPlayer())) return;
+
+        ItemStack itemStack = this._openShulker.GetShulkerActions().SearchShulkerBox((Player) event.getPlayer());
+
+        if (itemStack == null) return;
+
+        boolean enderChest = this._openShulker.GetShulkerActions().HasOpenShulkerInEnderChest((Player) event.getPlayer());
+
+        Container container = this._openShulker.GetShulkerActions().GetShulkerHoldingContainer((Player) event.getPlayer());
+
+        this._openShulker.GetShulkerActions().SaveShulkerBox(itemStack, event.getInventory(), (Player) event.getPlayer());
+
+        this.ReopenInventory(enderChest, container, event.getPlayer());
     }
 }

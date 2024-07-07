@@ -1,3 +1,4 @@
+WaitSecondsBeforeOpen: 0
 OpenSound: "BLOCK_SHULKER_BOX_OPEN"
 CloseSound: "BLOCK_SHULKER_BOX_CLOSE"
 Messages:

@@ -8,23 +8,20 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
 public class ShulkerReadOnlyListener implements Listener {
-    private final OpenShulker openShulker;
+    private final OpenShulker _openShulker;
 
     public ShulkerReadOnlyListener(OpenShulker openShulker) {
-        this.openShulker = openShulker;
+        this._openShulker = openShulker;
     }
 
     @EventHandler
-    public void onShulkerInventoryClick(InventoryClickEvent e) {
-        if (e.getView().getTopInventory().getType() != InventoryType.SHULKER_BOX)
-            return;
+    public void OnShulkerInventoryClick(InventoryClickEvent event) {
+        if (event.getView().getTopInventory().getType() != InventoryType.SHULKER_BOX) return;
 
-        if (!this.openShulker.getShulkerActions().hasOpenShulkerBox((Player) e.getWhoClicked()))
-            return;
+        if (!this._openShulker.GetShulkerActions().HasOpenShulkerBox((Player) event.getWhoClicked())) return;
 
-        if (e.getWhoClicked().hasPermission("openshulker.write"))
-            return;
+        if (event.getWhoClicked().hasPermission("openshulker.write")) return;
 
-        e.setCancelled(true);
+        event.setCancelled(true);
     }
 }

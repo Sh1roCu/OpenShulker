@@ -13,36 +13,44 @@ import java.util.Collections;
 import java.util.List;
 
 public class OpenShulkerCommand implements TabExecutor {
-    private final OpenShulker openShulker;
+    private final OpenShulker _openShulker;
 
     public OpenShulkerCommand(OpenShulker openShulker) {
-        this.openShulker = openShulker;
+        this._openShulker = openShulker;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!commandSender.hasPermission("openshulker.admin"))
-            return true;
+        if (!commandSender.hasPermission("openshulker.admin")) return true;
 
-        String prefix = ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.Prefix"));
+        String prefix = ChatColor.translateAlternateColorCodes('&', this._openShulker.getConfig().getString("Messages.Prefix"));
 
-        if (args.length <= 0) {
-            commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.OpenShulkerCommand.Syntax")));
+        if (args.length == 0) {
+            commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this._openShulker.getConfig()
+                                                                                                            .getString(
+                                                                                                                    "Messages.OpenShulkerCommand.Syntax")
+                                                                                                            .replace("<LABEL>", label)));
             return true;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            this.openShulker.reloadConfig();
-            commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.OpenShulkerCommand.Reloaded")));
+            this._openShulker.reloadConfig();
+            commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this._openShulker.getConfig()
+                                                                                                            .getString(
+                                                                                                                    "Messages.OpenShulkerCommand.Reloaded")
+                                                                                                            .replace("<LABEL>", label)));
             return true;
         }
 
-        commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this.openShulker.getConfig().getString("Messages.OpenShulkerCommand.Syntax")));
+        commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this._openShulker.getConfig()
+                                                                                                        .getString("Messages.OpenShulkerCommand.Syntax")
+                                                                                                        .replace("<LABEL>", label)));
         return true;
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s,
+                                                @NotNull String[] args) {
         if (args.length == 1) return Collections.singletonList("reload");
 
         return new ArrayList<>();

@@ -14,7 +14,22 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class OpenShulker extends JavaPlugin implements Listener {
-    private ShulkerActions shulkerActions;
+    private ShulkerActions _shulkerActions;
+
+    @Override
+    public void onDisable() {
+        for (Player all : Bukkit.getOnlinePlayers()) {
+            if (!this._shulkerActions.HasOpenShulkerBox(all)) continue;
+
+            ItemStack shulkerBox = this._shulkerActions.SearchShulkerBox(all);
+
+            if (shulkerBox == null) continue;
+
+            this._shulkerActions.SaveShulkerBox(shulkerBox, all.getOpenInventory().getTopInventory(), all);
+
+            all.closeInventory();
+        }
+    }
 
     @Override
     public void onEnable() {
@@ -32,8 +47,9 @@ public final class OpenShulker extends JavaPlugin implements Listener {
                 this.getConfig().set("OpenSound", "BLOCK_SHULKER_BOX_OPEN");
                 this.saveConfig();
                 this.reloadConfig();
-            } else
-                Bukkit.getLogger().severe("There is no sound called '" + openSound + "', for a list of sounds, visit https://www.spigotmc.org/wiki/cc-sounds-list/");
+            } else Bukkit.getLogger()
+                         .severe("There is no sound called '" + openSound +
+                                 "', for a list of sounds, visit https://www.spigotmc.org/wiki/cc-sounds-list/");
         }
 
         String closeSound = this.getConfig().getString("CloseSound");
@@ -46,11 +62,12 @@ public final class OpenShulker extends JavaPlugin implements Listener {
                 this.getConfig().set("OpenSound", "BLOCK_SHULKER_BOX_CLOSE");
                 this.saveConfig();
                 this.reloadConfig();
-            } else
-                Bukkit.getLogger().severe("There is no sound called '" + closeSound + "', for a list of sounds, visit https://www.spigotmc.org/wiki/cc-sounds-list/");
+            } else Bukkit.getLogger()
+                         .severe("There is no sound called '" + closeSound +
+                                 "', for a list of sounds, visit https://www.spigotmc.org/wiki/cc-sounds-list/");
         }
 
-        this.shulkerActions = new ShulkerActions(this);
+        this._shulkerActions = new ShulkerActions(this);
 
         Bukkit.getPluginManager().registerEvents(new ShulkerOpenCloseListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ShulkerDupeListener(this), this);
@@ -64,24 +81,7 @@ public final class OpenShulker extends JavaPlugin implements Listener {
         command.setTabCompleter(openShulkerCommand);
     }
 
-    @Override
-    public void onDisable() {
-        for (Player all : Bukkit.getOnlinePlayers()) {
-            if (!this.shulkerActions.hasOpenShulkerBox(all))
-                continue;
-
-            ItemStack shulkerBox = this.shulkerActions.searchShulkerBox(all);
-
-            if (shulkerBox == null)
-                continue;
-
-            this.shulkerActions.saveShulkerBox(shulkerBox, all.getOpenInventory().getTopInventory(), all);
-
-            all.closeInventory();
-        }
-    }
-
-    public ShulkerActions getShulkerActions() {
-        return this.shulkerActions;
+    public ShulkerActions GetShulkerActions() {
+        return this._shulkerActions;
     }
 }

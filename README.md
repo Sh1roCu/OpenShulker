@@ -37,7 +37,7 @@ Messages:
 # Support
 Discord: [https://discord.gg/dBhfCzdZxq](https://discord.gg/dBhfCzdZxq)
 
-Github: [Issues Page](https://github.com/TheBlackEntity/OpenShulker/issues)
+Github: [Issues Page](https://github.com/Test-Account666/OpenShulker/issues)
 
 # Todo
 - Add ability to input items by right clicking an item on/with a shulker box
