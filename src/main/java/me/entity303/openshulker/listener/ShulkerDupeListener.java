@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -121,6 +122,16 @@ public class ShulkerDupeListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void OnContainerBreak(EntityExplodeEvent event) {
         this.RemoveContainersWithOpenShulkers(event.blockList());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void OnDupedShulkerPlace(PlayerInteractEvent event) {
+        ItemStack itemStack = event.getHand() != null? event.getPlayer().getInventory().getItem(event.getHand()) : event.getItem();
+
+        if (!this._openShulker.GetShulkerActions().IsOpenShulker(itemStack)) return;
+
+        event.setCancelled(true);
+        event.setUseItemInHand(Event.Result.DENY);
     }
 
     @EventHandler
