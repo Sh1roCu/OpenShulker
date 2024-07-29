@@ -128,6 +128,8 @@ public class ShulkerDupeListener implements Listener {
     public void OnDupedShulkerPlace(PlayerInteractEvent event) {
         ItemStack itemStack = event.getHand() != null? event.getPlayer().getInventory().getItem(event.getHand()) : event.getItem();
 
+        if (itemStack == null) return;
+
         if (!this._openShulker.GetShulkerActions().IsOpenShulker(itemStack)) return;
 
         event.setCancelled(true);
