@@ -94,6 +94,10 @@ public final class OpenShulker extends JavaPlugin implements Listener {
         this._allowHandOpen = this.getConfig().getBoolean("OpenMethods.AllowHandOpen");
     }
 
+    public void reloadCfg(){
+        this.InitializeConfig();
+    }
+
     public ShulkerActions GetShulkerActions() {
         return this._shulkerActions;
     }
