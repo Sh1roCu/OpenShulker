@@ -53,7 +53,7 @@ public final class OpenShulker extends JavaPlugin implements Listener {
         command.setTabCompleter(openShulkerCommand);
     }
 
-    private void InitializeConfig() {
+    public void InitializeConfig() {
         this.saveDefaultConfig();
 
         this.reloadConfig();
@@ -92,10 +92,6 @@ public final class OpenShulker extends JavaPlugin implements Listener {
         this._allowContainerOpen = this.getConfig().getBoolean("OpenMethods.AllowContainerOpen");
         this._allowEnderChestOpen = this.getConfig().getBoolean("OpenMethods.AllowEnderChestOpen");
         this._allowHandOpen = this.getConfig().getBoolean("OpenMethods.AllowHandOpen");
-    }
-
-    public void reloadCfg(){
-        this.InitializeConfig();
     }
 
     public ShulkerActions GetShulkerActions() {
