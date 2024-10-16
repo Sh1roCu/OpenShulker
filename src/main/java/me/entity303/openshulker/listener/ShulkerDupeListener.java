@@ -126,7 +126,7 @@ public class ShulkerDupeListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void OnDupedShulkerPlace(PlayerInteractEvent event) {
-        ItemStack itemStack = event.getHand() != null? event.getPlayer().getInventory().getItem(event.getHand()) : event.getItem();
+        ItemStack itemStack = event.getHand() != null ? event.getPlayer().getInventory().getItem(event.getHand()) : event.getItem();
 
         if (itemStack == null) return;
 
@@ -150,7 +150,10 @@ public class ShulkerDupeListener implements Listener {
 
         if (!this._openShulker.GetShulkerActions().HasOpenShulkerBox((Player) event.getWhoClicked())) return;
 
-        if (!this._openShulker.GetShulkerActions().IsOpenShulker(clickedItemStack)) return;
+        //Make operator can modify shulkerbox's NBT to reset it, which can solve some strange bugs caused by PersistentDataContainer
+        //Like player has closed shulkerbox but the dataContainer still contains player's UUID so that player can't interact with the shulkerbox
+        if (!this._openShulker.GetShulkerActions().IsOpenShulker(clickedItemStack) || event.getWhoClicked().isOp())
+            return;
 
         if (event.isRightClick() && event.isShiftClick()) return;
 

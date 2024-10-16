@@ -34,7 +34,7 @@ public class OpenShulkerCommand implements TabExecutor {
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
-            this._openShulker.reloadConfig();
+            this._openShulker.InitializeConfig();
             commandSender.sendMessage(prefix + ChatColor.translateAlternateColorCodes('&', this._openShulker.getConfig()
                                                                                                             .getString(
                                                                                                                     "Messages.OpenShulkerCommand.Reloaded")

@@ -53,7 +53,7 @@ public final class OpenShulker extends JavaPlugin implements Listener {
         command.setTabCompleter(openShulkerCommand);
     }
 
-    private void InitializeConfig() {
+    public void InitializeConfig() {
         this.saveDefaultConfig();
 
         this.reloadConfig();
