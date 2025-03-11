@@ -34,7 +34,8 @@ public class ShulkerOpenCloseListener implements Listener {
         this._clickedShulkerKey = new NamespacedKey(this._openShulker, "clickedshulker");
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    //The priority should be set to NORMAL so that Residence plugin can work correctly, or else player who has no permission also can open any containers in residence.
+    @EventHandler(priority = EventPriority.NORMAL)
     public void OnShulkerOpen(PlayerInteractEvent event) {
         if (!this._openShulker._allowHandOpen) return;
 

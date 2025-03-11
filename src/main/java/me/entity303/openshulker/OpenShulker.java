@@ -2,6 +2,7 @@ package me.entity303.openshulker;
 
 import me.entity303.openshulker.commands.OpenShulkerCommand;
 import me.entity303.openshulker.listener.ShulkerDupeListener;
+import me.entity303.openshulker.listener.ShulkerFixListener;
 import me.entity303.openshulker.listener.ShulkerOpenCloseListener;
 import me.entity303.openshulker.listener.ShulkerReadOnlyListener;
 import me.entity303.openshulker.util.ShulkerActions;
@@ -44,6 +45,7 @@ public final class OpenShulker extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new ShulkerOpenCloseListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ShulkerDupeListener(this), this);
         Bukkit.getPluginManager().registerEvents(new ShulkerReadOnlyListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new ShulkerFixListener(this), this);
 
         OpenShulkerCommand openShulkerCommand = new OpenShulkerCommand(this);
 
