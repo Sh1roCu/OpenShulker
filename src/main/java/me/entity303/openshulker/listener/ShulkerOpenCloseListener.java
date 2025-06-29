@@ -1,5 +1,9 @@
 package me.entity303.openshulker.listener;
 
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.containers.Flags;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import me.entity303.openshulker.OpenShulker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,11 +22,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
 public class ShulkerOpenCloseListener implements Listener {
     private final OpenShulker _openShulker;
@@ -34,9 +38,16 @@ public class ShulkerOpenCloseListener implements Listener {
         this._clickedShulkerKey = new NamespacedKey(this._openShulker, "clickedshulker");
     }
 
-    //The priority should be set to NORMAL so that Residence plugin can work correctly, or else player who has no permission also can open any containers in residence.
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void OnShulkerOpen(PlayerInteractEvent event) {
+        Plugin res = Bukkit.getServer().getPluginManager().getPlugin("Residence");
+        if (res != null && res.isEnabled() && event.getClickedBlock() != null && event.getClickedBlock().getType().name().contains(Material.SHULKER_BOX.name())) {
+            Residence instance = Residence.getInstance();
+            ClaimedResidence residence = instance.getResidenceManager().getByLoc(event.getClickedBlock().getLocation());
+            if (residence != null && !residence.getPermissions().playerHas(event.getPlayer(), Flags.container, FlagPermissions.FlagCombo.OnlyTrue))
+                return;
+        }
+
         if (!this._openShulker._allowHandOpen) return;
 
         if (event.getHand() != EquipmentSlot.HAND) return;

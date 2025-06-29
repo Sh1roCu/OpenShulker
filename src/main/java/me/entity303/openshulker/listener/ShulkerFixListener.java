@@ -1,10 +1,8 @@
 package me.entity303.openshulker.listener;
 
 import me.entity303.openshulker.OpenShulker;
-import me.entity303.openshulker.util.ShulkerActions;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.block.ShulkerBox;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -35,10 +33,10 @@ public class ShulkerFixListener implements Listener {
                 PersistentDataContainer container = blockStateMeta.getPersistentDataContainer();
                 container.remove(this.openShulkerKey);
                 itemStack.setItemMeta(blockStateMeta);
-                container = event.getPlayer().getPersistentDataContainer();
-                container.remove(this.openShulkerKey);
-                container.remove(this.openShulkerLocationKey);
             }
         }
+        PersistentDataContainer container = event.getPlayer().getPersistentDataContainer();
+        container.remove(this.openShulkerKey);
+        container.remove(this.openShulkerLocationKey);
     }
 }
