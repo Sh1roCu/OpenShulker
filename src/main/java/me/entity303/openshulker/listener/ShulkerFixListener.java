@@ -24,7 +24,7 @@ public class ShulkerFixListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void OnShulkerOpen(PlayerJoinEvent event) {
+    public void resetOpenShulkerDataContainer(PlayerJoinEvent event) {
         Inventory inv = event.getPlayer().getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
             ItemStack itemStack = inv.getItem(i);

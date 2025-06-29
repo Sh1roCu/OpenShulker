@@ -1,9 +1,5 @@
 package me.entity303.openshulker.listener;
 
-import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.containers.Flags;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import me.entity303.openshulker.OpenShulker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 
 public class ShulkerOpenCloseListener implements Listener {
     private final OpenShulker _openShulker;
@@ -40,14 +35,6 @@ public class ShulkerOpenCloseListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void OnShulkerOpen(PlayerInteractEvent event) {
-        Plugin res = Bukkit.getServer().getPluginManager().getPlugin("Residence");
-        if (res != null && res.isEnabled() && event.getClickedBlock() != null && event.getClickedBlock().getType().name().contains(Material.SHULKER_BOX.name())) {
-            Residence instance = Residence.getInstance();
-            ClaimedResidence residence = instance.getResidenceManager().getByLoc(event.getClickedBlock().getLocation());
-            if (residence != null && !residence.getPermissions().playerHas(event.getPlayer(), Flags.container, FlagPermissions.FlagCombo.OnlyTrue))
-                return;
-        }
-
         if (!this._openShulker._allowHandOpen) return;
 
         if (event.getHand() != EquipmentSlot.HAND) return;
@@ -59,7 +46,7 @@ public class ShulkerOpenCloseListener implements Listener {
         //Don't open shulkerbox when interact with hopper
         if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.HOPPER) return;
 
-        event.setCancelled(this._openShulker.GetShulkerActions().AttemptToOpenShulkerBox(event.getPlayer()));
+        if (this._openShulker.GetShulkerActions().AttemptToOpenShulkerBox(event.getPlayer())) event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)

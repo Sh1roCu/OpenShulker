@@ -70,12 +70,5 @@
             <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>residence</groupId>
-            <artifactId>residence</artifactId>
-            <version>5.1.4.3</version>
-            <scope>system</scope>
-            <systemPath>D:/IDEAProjects/MinecraftPlugins/Residence5.1.4.3.jar</systemPath>
-        </dependency>
     </dependencies>
 </project>
